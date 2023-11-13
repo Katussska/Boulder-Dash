@@ -1,9 +1,5 @@
 # MCBoulder Dash
 
-This is a JavaFX implementation of the classic Boulder Dash game with a Minecraft-inspired theme.
-
-## Introduction
-
 MCBoulder Dash is a simple game project created in JavaFX. It brings back the essence of the original Boulder Dash game, but with a visual twist inspired by Minecraft's blocky graphics.
 
 ## Features
