@@ -5,7 +5,6 @@ module mcboulderdash.temp {
     requires org.controlsfx.controls;
     requires com.almasb.fxgl.all;
 
-    opens mcboulderdash to javafx.fxml;
     exports mcboulderdash;
 
     opens assets.textures;
