@@ -1,0 +1,48 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "/Users/tassilo/code/MCBoulder-Dash/src/main/resources/assets/levels/01.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "/Users/tassilo/code/MCBoulder-Dash/src/main/resources/assets/levels/01.tmx": {
+            "scale": 1.55,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 640,
+                "y": 353.2258064516129
+            }
+        },
+        "/Users/tassilo/code/MCBoulder-Dash/src/main/resources/assets/levels/01.tmx#Blocks": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "Blocks.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 5,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "/Users/tassilo/code/MCBoulder-Dash/src/main/resources/assets/textures",
+    "map.height": 22,
+    "map.lastUsedFormat": "tmx",
+    "map.width": 40,
+    "openFiles": [
+        "/Users/tassilo/code/MCBoulder-Dash/src/main/resources/assets/levels/01.tmx"
+    ],
+    "project": "MCBoulderDash.tiled-project",
+    "property.type": "string",
+    "recentFiles": [
+        "/Users/tassilo/code/MCBoulder-Dash/src/main/resources/assets/levels/01.tmx",
+        "Blocks.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 1
+}

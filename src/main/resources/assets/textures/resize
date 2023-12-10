@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Specify the output directory for upscaled PNG files
+output_directory="./s"
+
+# Create output directory if it doesn't exist
+mkdir -p "$output_directory"
+
+# Loop through all PNG files in the current directory
+for file in *.png; do
+	# Upscale the image and save it to the output directory
+	convert "$file" -scale 32x32\! "$output_directory/$file"
+done
+
+echo "Upscaling complete!"

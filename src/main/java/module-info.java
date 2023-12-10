@@ -6,6 +6,8 @@ module mcboulderdash.temp {
     requires com.almasb.fxgl.all;
 
     exports mcboulderdash;
+    exports mcboulderdash.components;
+    exports mcboulderdash.types;
 
     opens assets.textures;
     opens assets.levels;
