@@ -4,37 +4,37 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.SceneFactory;
-import com.almasb.fxgl.app.scene.SimpleGameMenu;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.pathfinding.CellState;
 import com.almasb.fxgl.pathfinding.astar.AStarGrid;
-import javafx.beans.binding.StringBinding;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import mcboulderdash.components.Fallable;
 import mcboulderdash.components.PlayerComponent;
 import mcboulderdash.components.StarComponent;
 import mcboulderdash.components.StoneComponent;
 import mcboulderdash.types.Direction;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
+import static mcboulderdash.Constants.SCORE_FILE;
 import static mcboulderdash.Constants.TILE_SIZE;
 import static mcboulderdash.types.EntityType.*;
 
 public class Main extends GameApplication {
 
     private AStarGrid grid;
-    private Sounds sounds;
+    private UI ui;
     private PlayerComponent playerComponent;
     private List<Fallable> fallableComponents;
+    private String playerName = "default";
 
 
     public static void main(String[] args) {
@@ -52,20 +52,11 @@ public class Main extends GameApplication {
         settings.setWidth(40 * TILE_SIZE);
         settings.setHeight(22 * TILE_SIZE);
 //        settings.setDeveloperMenuEnabled(true);
+        ui = new UI();
         settings.setSceneFactory(new SceneFactory() {
             @Override
             public FXGLMenu newGameMenu() {
-                var menu = new SimpleGameMenu();
-                Button restartBtn = getUIFactoryService().newButton("RESTART");
-                restartBtn.setTranslateX(558);
-                restartBtn.setTranslateY(268);
-                restartBtn.setOnAction(e -> getGameController().startNewGame());
-                Button scoresBtn = getUIFactoryService().newButton("SCORES");
-                scoresBtn.setTranslateX(558);
-                scoresBtn.setTranslateY(468);
-                menu.addChild(restartBtn);
-                menu.addChild(scoresBtn);
-                return menu;
+                return ui.initGameMenu();
             }
         });
     }
@@ -103,6 +94,13 @@ public class Main extends GameApplication {
                 stoneFall();
             }
         }, KeyCode.D);
+
+        getInput().addAction(new UserAction("Set PlayerName") {
+            @Override
+            protected void onAction() {
+                setPlayerName();
+            }
+        }, KeyCode.N);
     }
 
     @Override
@@ -166,14 +164,7 @@ public class Main extends GameApplication {
 
     @Override
     protected void initUI() {
-        Text scoreText = new Text();
-        scoreText.setTranslateX(32);
-        scoreText.setTranslateY(18);
-        scoreText.setLayoutY(10);
-        scoreText.textProperty().bind(getScore());
-        scoreText.setFont(Font.font("Impact", 25));
-        scoreText.setFill(Color.WHITE);
-        getGameScene().addUINode(scoreText);
+        ui.initUI();
     }
 
     @Override
@@ -185,7 +176,23 @@ public class Main extends GameApplication {
         fallableComponents.forEach(Fallable::fall);
     }
 
+    private void saveScores() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(SCORE_FILE, true))) {
+            File file = new File(SCORE_FILE);
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            writer.write(playerName + ";" + playerComponent.getScore());
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void gameOver() {
+        saveScores();
         getDialogService()
                 .showConfirmationBox(
                         String.format("Game over. Score: %d. Restart?", playerComponent.getScore()), res -> {
@@ -198,7 +205,7 @@ public class Main extends GameApplication {
         getGameController().pauseEngine();
     }
 
-    private StringBinding getScore() {
-        return getWorldProperties().intProperty("score").asString();
+    private void setPlayerName() {
+        getDialogService().showInputBox("Player name:", n -> this.playerName = n);
     }
 }

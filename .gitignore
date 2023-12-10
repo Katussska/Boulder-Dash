@@ -5,6 +5,7 @@ target/
 
 node_modules
 *.log
+scores.csv
 
 ### FXGL ###
 logs/
