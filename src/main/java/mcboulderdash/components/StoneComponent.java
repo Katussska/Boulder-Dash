@@ -6,6 +6,7 @@ import javafx.animation.PauseTransition;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
 import mcboulderdash.Main;
+import mcboulderdash.Sounds;
 import mcboulderdash.types.Direction;
 
 import static com.almasb.fxgl.dsl.FXGL.getGameWorld;
@@ -19,6 +20,7 @@ public class StoneComponent extends FallingComponent implements Fallable {
         PauseTransition delay = new PauseTransition(Duration.seconds(0.3));
         delay.setOnFinished(e -> {
             if (!getGameWorld().getEntitiesAt(new Point2D(entity.getX() + 1, entity.getY() + TILE_SIZE + 1)).isEmpty() && lethal) {
+                Sounds.playDeath();
                 FXGL.<Main>getAppCast().gameOver();
             }
             // je pod sutrem misto?

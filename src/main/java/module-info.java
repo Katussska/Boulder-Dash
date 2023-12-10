@@ -11,4 +11,5 @@ module mcboulderdash.temp {
 
     opens assets.textures;
     opens assets.levels;
+    opens assets.sounds;
 }

@@ -7,11 +7,14 @@ import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.app.scene.SimpleGameMenu;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.input.UserAction;
-import com.almasb.fxgl.logging.Logger;
 import com.almasb.fxgl.pathfinding.CellState;
 import com.almasb.fxgl.pathfinding.astar.AStarGrid;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import mcboulderdash.components.Fallable;
 import mcboulderdash.components.PlayerComponent;
 import mcboulderdash.components.StarComponent;
@@ -20,6 +23,7 @@ import mcboulderdash.types.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 import static mcboulderdash.Constants.TILE_SIZE;
@@ -27,9 +31,8 @@ import static mcboulderdash.types.EntityType.*;
 
 public class Main extends GameApplication {
 
-    private final Logger log = Logger.get(Main.class);
     private AStarGrid grid;
-    private Entity player;
+    private Sounds sounds;
     private PlayerComponent playerComponent;
     private List<Fallable> fallableComponents;
 
@@ -53,8 +56,15 @@ public class Main extends GameApplication {
             @Override
             public FXGLMenu newGameMenu() {
                 var menu = new SimpleGameMenu();
-                Button btn = getUIFactoryService().newButton("lol");
-                menu.addChild(btn);
+                Button restartBtn = getUIFactoryService().newButton("RESTART");
+                restartBtn.setTranslateX(558);
+                restartBtn.setTranslateY(268);
+                restartBtn.setOnAction(e -> getGameController().startNewGame());
+                Button scoresBtn = getUIFactoryService().newButton("SCORES");
+                scoresBtn.setTranslateX(558);
+                scoresBtn.setTranslateY(468);
+                menu.addChild(restartBtn);
+                menu.addChild(scoresBtn);
                 return menu;
             }
         });
@@ -108,7 +118,7 @@ public class Main extends GameApplication {
             return CellState.WALKABLE;
         });
 
-        player = spawn("player");
+        Entity player = spawn("player");
         playerComponent = player.getComponent(PlayerComponent.class);
 
         fallableComponents = new ArrayList<>();
@@ -126,11 +136,14 @@ public class Main extends GameApplication {
 
     @Override
     protected void initPhysics() {
-        onCollision(PLAYER, DIRT, (p, d) -> d.removeFromWorld());
+        onCollision(PLAYER, DIRT, (p, d) -> {
+            d.removeFromWorld();
+        });
 
         onCollision(PLAYER, STAR, (p, s) -> {
             playerComponent.addScore();
             s.removeFromWorld();
+            Sounds.playCollect();
         });
 
         onCollision(PLAYER, STONE, (p, s) -> {
@@ -145,7 +158,27 @@ public class Main extends GameApplication {
             }
         });
 
-        onCollision(PLAYER, PORTAL, (p, po) -> gameOver());
+        onCollision(PLAYER, PORTAL, (p, po) -> {
+            gameOver();
+            Sounds.playPortal();
+        });
+    }
+
+    @Override
+    protected void initUI() {
+        Text scoreText = new Text();
+        scoreText.setTranslateX(32);
+        scoreText.setTranslateY(18);
+        scoreText.setLayoutY(10);
+        scoreText.textProperty().bind(getScore());
+        scoreText.setFont(Font.font("Impact", 25));
+        scoreText.setFill(Color.WHITE);
+        getGameScene().addUINode(scoreText);
+    }
+
+    @Override
+    protected void initGameVars(Map<String, Object> vars) {
+        vars.put("score", 0);
     }
 
     private void stoneFall() {
@@ -163,5 +196,9 @@ public class Main extends GameApplication {
                                 getGameController().exit();
                         });
         getGameController().pauseEngine();
+    }
+
+    private StringBinding getScore() {
+        return getWorldProperties().intProperty("score").asString();
     }
 }

@@ -5,12 +5,14 @@ import com.almasb.fxgl.logging.Logger;
 import com.almasb.fxgl.pathfinding.CellMoveComponent;
 import com.almasb.fxgl.pathfinding.astar.AStarMoveComponent;
 
+import static com.almasb.fxgl.dsl.FXGL.inc;
+
 public class PlayerComponent extends Component {
 
     protected final Logger log = Logger.get(PlayerComponent.class);
     public CellMoveComponent cell;
     public AStarMoveComponent astar;
-    protected int score = 0;
+    private int score = 0;
 
     public void moveRight() {
         astar.moveToRightCell();
@@ -38,6 +40,7 @@ public class PlayerComponent extends Component {
     }
 
     public void addScore() {
+        inc("score", +10);
         score += 10;
     }
 
