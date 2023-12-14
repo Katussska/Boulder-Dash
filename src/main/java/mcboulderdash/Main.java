@@ -145,11 +145,11 @@ public class Main extends GameApplication {
         });
 
         onCollision(PLAYER, STONE, (p, s) -> {
-            // stone can be moved sideways only
-            if (s.getY() != p.getY() - 1) {
-                playerComponent.stopMovement();
-                return;
-            }
+//            // stone can be moved sideways only
+//            if (s.getY() != p.getY() - 1) {
+//                playerComponent.stopMovement();
+//                return;
+//            }
             var d = s.getX() > p.getX() ? Direction.RIGHT : Direction.LEFT;
             if (!s.getComponent(StoneComponent.class).push(d)) {
                 playerComponent.stopMovement();
